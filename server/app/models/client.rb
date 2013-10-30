@@ -5,6 +5,7 @@ class Client < ActiveRecord::Base
   has_many :originals, :dependent => :destroy
   has_many :etch_configs, :dependent => :destroy
   has_many :results, :dependent => :destroy
+  has_many :predicts, :dependent => :destroy
 
   validates_presence_of :name
   validates_uniqueness_of :name

@@ -11,14 +11,14 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20081003164106) do
+ActiveRecord::Schema.define(:version => 20131024010950) do
 
   create_table "clients", :force => true do |t|
     t.string   "name",       :null => false
     t.integer  "status"
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.text     "message"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
   end
 
   add_index "clients", ["name"], :name => "index_clients_on_name", :unique => true
@@ -29,8 +29,8 @@ ActiveRecord::Schema.define(:version => 20081003164106) do
     t.integer  "client_id",  :null => false
     t.string   "file",       :null => false
     t.text     "config",     :null => false
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "etch_configs", ["client_id"], :name => "index_etch_configs_on_client_id"
@@ -40,31 +40,56 @@ ActiveRecord::Schema.define(:version => 20081003164106) do
     t.integer  "client_id",  :null => false
     t.string   "key",        :null => false
     t.text     "value",      :null => false
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "facts", ["client_id"], :name => "index_facts_on_client_id"
   add_index "facts", ["key"], :name => "index_facts_on_key"
 
+  create_table "hashed_contents", :force => true do |t|
+    t.string   "type"
+    t.string   "sha2",               :limit => 64, :null => false
+    t.text     "content"
+    t.integer  "content_owner_id"
+    t.string   "content_owner_type"
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
+  end
+
+  add_index "hashed_contents", ["content_owner_type", "content_owner_id"], :name => "index_hashed_contents_on_content_owner_type_and_content_owner_id"
+  add_index "hashed_contents", ["sha2"], :name => "index_hashed_contents_on_sha2", :unique => true
+
   create_table "originals", :force => true do |t|
     t.integer  "client_id",  :null => false
     t.string   "file",       :null => false
     t.string   "sum",        :null => false
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "originals", ["client_id"], :name => "index_originals_on_client_id"
   add_index "originals", ["file"], :name => "index_originals_on_file"
+
+  create_table "predicts", :force => true do |t|
+    t.string   "name",       :null => false
+    t.integer  "client_id"
+    t.string   "file",       :null => false
+    t.string   "result"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "predicts", ["client_id"], :name => "index_predicts_on_client_id"
+  add_index "predicts", ["name", "file", "client_id"], :name => "index_predicts_on_name_and_file_and_client_id", :unique => true
 
   create_table "results", :force => true do |t|
     t.integer  "client_id",  :null => false
     t.string   "file",       :null => false
     t.boolean  "success",    :null => false
     t.text     "message",    :null => false
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "results", ["client_id"], :name => "index_results_on_client_id"
